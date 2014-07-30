@@ -11,6 +11,8 @@ correspond to a network element. Any given network element may actually be
 multiple UPnP devices, or may be only a single UPnP device.
 """
 import requests
+import re
+import xml.etree.ElementTree as ET
 from ..utils import camelcase_to_underscore
 from ..servicemapping import init_service
 
@@ -117,3 +119,9 @@ class Device(object):
             self.devices.append(new_device)
 
         return
+
+    def get_friendly_name(self):
+      root = ET.fromstring(self.describe())
+      m = re.match('\{.*\}', root.tag)
+      namespace = m.group(0) if m else ''
+      return root.find('.//' + namespace + 'friendlyName').text
