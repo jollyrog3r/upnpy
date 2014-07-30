@@ -121,7 +121,13 @@ class Device(object):
         return
 
     def get_friendly_name(self):
-      root = ET.fromstring(self.describe())
-      m = re.match('\{.*\}', root.tag)
-      namespace = m.group(0) if m else ''
-      return root.find('.//' + namespace + 'friendlyName').text
+      """
+      Returns the friendly name od device. If it can't obtain it returns None
+      """
+      try:
+          root = ET.fromstring(self.describe())
+          m = re.match('\{.*\}', root.tag)
+          namespace = m.group(0) if m else ''
+          return root.find('.//' + namespace + 'friendlyName').text
+      except:
+        return None
